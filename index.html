@@ -525,21 +525,21 @@ async function viewClient(name){
   const days=(cl.program_days||[]);
   const daysHtml=days.map((day,di)=>`
     <div style="margin-bottom:16px">
-      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#444;letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase">${day.label||'Day '+(di+1)}</div>
+      <div style="font-family:monospace;font-size:.62rem;color:#444;letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase">${day.label||'Day '+(di+1)}</div>
       ${(day.exercises||[]).map((ex,ei)=>{
         const w=inputs[`d${di}e${ei}s0w`]||'—';const r=inputs[`d${di}e${ei}s0r`]||'—';
-        return `<div style="display:grid;grid-template-columns:1fr 80px 60px;gap:8px;padding:8px 12px;background:#000;border-radius:2px;margin-bottom:4px;font-family:'DM Mono',monospace;font-size:.64rem;color:#444"><div style="color:#fff">${ex.name}</div><div>${ex.sets}×${ex.reps}</div><div>${w}/${r}r</div></div>`;
+        return `<div style="display:grid;grid-template-columns:1fr 80px 60px;gap:8px;padding:8px 12px;background:#000;border-radius:2px;margin-bottom:4px;font-family:monospace;font-size:.64rem;color:#444"><div style="color:#fff">${ex.name}</div><div>${ex.sets}×${ex.reps}</div><div>${w}/${r}r</div></div>`;
       }).join('')}
-    </div>`).join('')||'<div style="font-family:'DM Mono',monospace;font-size:.64rem;color:#222;padding:20px;text-align:center">No program assigned</div>';
+    </div>`).join('')||'<div style="font-family:monospace;font-size:.64rem;color:#222;padding:20px;text-align:center">No program assigned</div>';
   let ciHtml='';
   if(ci){
     const col=v=>v>=7?'#4caf50':v>=4?'#c9a84c':'#c0392b';
     ciHtml=`<div style="background:#0a0a0a;border:1px solid #111;border-radius:3px;padding:14px;margin-bottom:16px">
-      <div style="font-family:'DM Mono',monospace;font-size:.56rem;color:#333;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px">Latest Check-in · ${ci.date||''}</div>
+      <div style="font-family:monospace;font-size:.56rem;color:#333;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px">Latest Check-in · ${ci.date||''}</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
-        ${['energy','sleep','stress','readiness'].map(k=>`<div style="background:#000;border:1px solid #1a1a1a;border-radius:2px;padding:8px;text-align:center"><div style="font-family:'Playfair Display',serif;font-weight:900;font-size:1.2rem;color:${col(k==='stress'?10-ci[k]:ci[k]||0)};line-height:1;margin-bottom:3px">${ci[k]||0}</div><div style="font-family:'DM Mono',monospace;font-size:.48rem;color:#333;text-transform:uppercase">${k}</div></div>`).join('')}
+        ${['energy','sleep','stress','readiness'].map(k=>`<div style="background:#000;border:1px solid #1a1a1a;border-radius:2px;padding:8px;text-align:center"><div style="font-family:serif;font-weight:900;font-size:1.2rem;color:${col(k==='stress'?10-ci[k]:ci[k]||0)};line-height:1;margin-bottom:3px">${ci[k]||0}</div><div style="font-family:monospace;font-size:.48rem;color:#333;text-transform:uppercase">${k}</div></div>`).join('')}
       </div>
-      ${ci.notes?`<div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#444;font-style:italic;border-top:1px solid #111;padding-top:10px;margin-top:10px">"${ci.notes}"</div>`:''}
+      ${ci.notes?`<div style="font-family:monospace;font-size:.62rem;color:#444;font-style:italic;border-top:1px solid #111;padding-top:10px;margin-top:10px">"${ci.notes}"</div>`:''}
     </div>`;
   }
   document.getElementById('clientDetailContent').innerHTML=`
@@ -547,9 +547,9 @@ async function viewClient(name){
       <div class="avatar" style="width:44px;height:44px;font-size:.9rem">${init}</div>
       <div><div class="modal-title" style="font-size:1.6rem">${name}</div><div class="modal-sub" style="margin-bottom:0">${cl.program||'No program'} · Week ${cl.week||1}</div></div>
     </div>
-    ${cl.notes?`<div style="background:#000;border:1px solid #1a1a1a;border-radius:2px;padding:12px 14px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:.64rem;color:#333;line-height:1.7">${cl.notes}</div>`:''}
+    ${cl.notes?`<div style="background:#000;border:1px solid #1a1a1a;border-radius:2px;padding:12px 14px;margin-bottom:16px;font-family:monospace;font-size:.64rem;color:#333;line-height:1.7">${cl.notes}</div>`:''}
     ${ciHtml}
-    <div style="font-family:'DM Mono',monospace;font-size:.56rem;color:#333;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #111">Logged Data</div>
+    <div style="font-family:monospace;font-size:.56rem;color:#333;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #111">Logged Data</div>
     ${daysHtml}`;
   openModal('clientDetailModal');
 }
@@ -668,7 +668,7 @@ function renderClientView(client){
             <span class="ex-rx">${ex.sets} × ${ex.reps}</span>
           </div>
           <div class="ex-body" id="cbody-${di}-${ei}" ${ei===0&&di===0?'style="display:block"':''}>
-            ${ex.videoUrl?`<button style="width:100%;margin-bottom:14px;background:#0d0d0d;border:1px solid #1a1a1a;color:#fff;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:9px;border-radius:2px;cursor:pointer" onclick="toggleVideo(${di},${ei})">▶ Watch Tutorial</button><div id="video-${di}-${ei}" style="display:none;width:100%;aspect-ratio:16/9;margin-bottom:14px;border-radius:2px;overflow:hidden;background:#000"></div>`:''}
+            ${ex.videoUrl?`<button style="width:100%;margin-bottom:14px;background:#0d0d0d;border:1px solid #1a1a1a;color:#fff;font-family:monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:9px;border-radius:2px;cursor:pointer" onclick="toggleVideo(${di},${ei})">▶ Watch Tutorial</button><div id="video-${di}-${ei}" style="display:none;width:100%;aspect-ratio:16/9;margin-bottom:14px;border-radius:2px;overflow:hidden;background:#000"></div>`:''}
             <div class="sets-grid">
               <div class="sg-hdr">Set</div><div class="sg-hdr">Weight</div><div class="sg-hdr">Reps</div><div class="sg-hdr">RPE</div>
               ${Array.from({length:parseInt(ex.sets)||3},(_,si)=>`
