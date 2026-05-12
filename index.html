@@ -587,6 +587,18 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let S = {clients:[],pin:'1234',currentClient:null,programDays:[],selectedDays:[]};
 let saveTimer = null;
 
+// ── UTILITIES ──
+function previewPhoto(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = function(e) {
+    const p = document.getElementById('photoPreview');
+    if (p) { p.src = e.target.result; p.style.display = 'block'; }
+  };
+  r.readAsDataURL(f);
+}
+
 // ── NAVIGATION ──
 function showLanding(){
   document.querySelectorAll('#coach,#client-portal').forEach(e=>e.classList.remove('visible'));
@@ -947,7 +959,7 @@ function renderClientView(client){
       <div class="photo-upload-title">Weekly Progress Photo</div>
       <div class="photo-upload-sub">Front, side or back · same time each week · same location</div>
       <div class="photo-input-row">
-        <input type="file" id="photoInput" class="photo-file-input" accept="image/*" onchange="const f=this.files[0];if(f){const r=new FileReader();r.onload=e=>{const p=document.getElementById('photoPreview');p.src=e.target.result;p.style.display='block'};r.readAsDataURL(f)}">
+        <input type="file" id="photoInput" class="photo-file-input" accept="image/*" onchange="previewPhoto(this)">
         <label for="photoInput" class="photo-file-label">Choose Photo</label>
         <button class="photo-upload-btn" id="photoUploadBtn" onclick="uploadProgressPhoto('${client.name}')">Upload Photo</button>
         <img id="photoPreview" class="photo-preview">
