@@ -890,7 +890,7 @@ function renderClientView(client){
     </div>
     <div class="ci-form">
       <div class="ci-form-title">Weekly Check-in</div>
-      <div class="ci-form-sub">2 minutes · helps your coach track how you're doing</div>
+      <div class="ci-form-sub">2 minutes · helps your coach track how you are doing</div>
       <div class="slider-group">
         <div class="slider-lbl"><span>Energy</span><span class="slider-val" id="sv-energy">5</span></div>
         <input class="ci-slider" type="range" min="1" max="10" value="5" oninput="document.getElementById('sv-energy').textContent=this.value" id="sl-energy">
@@ -1153,11 +1153,13 @@ function renderPbSidebar() {
     list.innerHTML = '<div class="pb-empty-list">No programs yet<br>Click + New to start</div>';
     return;
   }
-  list.innerHTML = PB.programs.map(p => `
-    <div class="pb-template-item ${PB.currentProgram && PB.currentProgram.id === p.id ? 'active' : ''}" onclick="selectProgram(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+  list.innerHTML = PB.programs.map(p => {
+    const isActive = PB.currentProgram && PB.currentProgram.id === p.id ? 'active' : '';
+    const pJson = JSON.stringify(p).replace(/"/g, '&quot;');
+    return `<div class="pb-template-item ${isActive}" onclick="selectProgram(${pJson})">
       <div class="pb-template-name">${p.name || 'Untitled Program'}</div>
       <div class="pb-template-meta">${(p.weeks || []).length} weeks · ${countExercises(p)} exercises</div>
-    </div>`).join('');
+    </div>`;}).join('');
 }
 
 function countExercises(program) {
@@ -1252,10 +1254,13 @@ function renderHRZones(intake) {
   const zonesHtml = zones.map(z => {
     const lo = Math.round(maxHR * z.low);
     const hi = Math.round(maxHR * z.high);
-    return `<div class="hr-zone-row ${z.highlight ? 'z2-highlight' : ''}">
-      <span class="hz-label" style="color:${z.color}">${z.label}${z.highlight ? '<span class="z2-badge">Your target</span>' : ''}</span>
+    const rowClass = z.highlight ? 'z2-highlight' : '';
+    const badge = z.highlight ? '<span class="z2-badge">Your target</span>' : '';
+    const rangeClass = z.highlight ? 'z2' : '';
+    return `<div class="hr-zone-row ${rowClass}">
+      <span class="hz-label" style="color:${z.color}">${z.label}${badge}</span>
       <span class="hz-desc">${z.desc}</span>
-      <span class="hz-range ${z.highlight ? 'z2' : ''}">${lo}–${hi} bpm</span>
+      <span class="hz-range ${rangeClass}">${lo}\u2013${hi} bpm</span>
     </div>`;
   }).join('');
 
