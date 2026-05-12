@@ -718,8 +718,8 @@ async function renderLeaderboard(){
   if(!rows.some(r=>r.done>0)){document.getElementById('lbTableBody').innerHTML='<div class="empty">No data yet</div>';return;}
   document.getElementById('lbTableBody').innerHTML=rows.map((r,i)=>{
     const rc=i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    const dots=Array.from({length:7},(_,d)=>`<div class="s-dot ${d<r.streak?'hit':''}"></div>`).join('');
-    return `<div class="lb-row ${i===0?'top1':''}">
+    const dots=Array.from({length:7},(_,d)=>{const dc=d<r.streak?'hit':'';return `<div class="s-dot ${dc}"></div>`;}).join('');
+    const lbClass=i===0?'top1':'';return `<div class="lb-row ${lbClass}">
       <div class="lb-rank ${rc}">${i+1}</div>
       <div><div class="client-name">${r.name}</div><div class="client-goal">${r.goal}</div></div>
       <div><div class="lb-stat">${r.sessions}</div><div class="lb-stat-lbl">Sessions</div></div>
@@ -871,7 +871,7 @@ function renderClientView(client){
   const content=document.getElementById('cpContent');
 
   const allTabs=[{label:'Check-in',isCheckin:true},{label:'Nutrition',isNutrition:true},...days.map((d,i)=>({'label':d.label||(i===0?'Day 1':'Day '+(i+1)),'idx':i}))];
-  tabs.innerHTML=allTabs.map((t,i)=>`<button class="cp-tab ${i===0?'active':''}" onclick="switchCpDay(${i})">${t.label}</button>`).join('');
+  tabs.innerHTML=allTabs.map((t,i)=>{const ac=i===0?'active':'';return `<button class="cp-tab ${ac}" onclick="switchCpDay(${i})">${t.label}</button>`;}).join('');
 
   // Weight logging
   const ciSessionHtml=`<div class="cp-session active" id="cpsession-0">
@@ -922,7 +922,7 @@ function renderClientView(client){
     </div>
   </div>`;
 
-  const sessionsHtml=days.map  const sessionsHtml=days.map((day,di)=>`
+  const sessionsHtml=days.map((day,di)=>`
     <div class="cp-session" id="cpsession-${di+1}">
       <div class="session-note">Week ${client.week||1} · ${day.label||'Session '+(di+1)} — Log weights and reps. Check off each exercise when done.</div>
       ${(day.exercises||[]).map((ex,ei)=>`
@@ -961,7 +961,7 @@ function switchCpDay(idx){
   document.querySelectorAll('.cp-session').forEach((s,i)=>s.classList.toggle('active',i===idx));
   document.querySelectorAll('.cp-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
 }
-function toggleEx(di,ei){const b=document.getElementById(`cbody-${di}-${ei}`);b.style.display=b.style.display==='block'?'none':'block';}
+function toggleEx(di,ei){const b=document.getElementById('cbody-'+di+'-'+ei);b.style.display=b.style.display==='block'?'none':'block';}
 function toggleCheck(di,ei){
   const ch=document.getElementById(`ccheck-${di}-${ei}`);
   const card=document.getElementById(`ccard-${di}-${ei}`);
