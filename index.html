@@ -849,7 +849,8 @@ async function saveClient(){
 // ── CLIENT VIEW ──
 async function checkAndRenderClient(client) {
   try {
-    const {data: intake} = await sb.from('intake_forms').select('*').eq('client_name', client.name).single();
+    const {data, error} = await sb.from('intake_forms').select('*').eq('client_name', client.name).limit(1);
+    const intake = data && data.length > 0 ? data[0] : null;
     if (!intake) {
       showIntakeForm(client);
     } else {
@@ -861,7 +862,6 @@ async function checkAndRenderClient(client) {
       }, 300);
     }
   } catch(e) {
-    // No intake found - show intake form
     showIntakeForm(client);
   }
 }
