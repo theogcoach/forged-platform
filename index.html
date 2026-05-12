@@ -848,17 +848,21 @@ async function saveClient(){
 
 // ── CLIENT VIEW ──
 async function checkAndRenderClient(client) {
-  // Check if intake form completed
-  const {data: intake} = await sb.from('intake_forms').select('*').eq('client_name', client.name).single();
-  if (!intake) {
+  try {
+    const {data: intake} = await sb.from('intake_forms').select('*').eq('client_name', client.name).single();
+    if (!intake) {
+      showIntakeForm(client);
+    } else {
+      S.intakeData = intake;
+      renderClientView(client);
+      setTimeout(() => {
+        renderNutritionPlan(intake);
+        loadWeightHistory(client.name);
+      }, 300);
+    }
+  } catch(e) {
+    // No intake found - show intake form
     showIntakeForm(client);
-  } else {
-    S.intakeData = intake;
-    renderClientView(client);
-    setTimeout(() => {
-      renderNutritionPlan(intake);
-      loadWeightHistory(client.name);
-    }, 300);
   }
 }
 
@@ -1490,6 +1494,12 @@ let selectedGoal = '';
 let weightUnit = 'kg';
 
 function showIntakeForm(client) {
+  // If client is empty (called from nutrition button), get from localStorage
+  if (!client || !client.name) {
+    const stored = localStorage.getItem('forgedClient');
+    client = stored ? JSON.parse(stored) : {name: S.currentClient};
+  }
+  document.getElementById('client-portal').classList.remove('visible');
   document.getElementById('intakeScreen').style.display = 'block';
   document.getElementById('intakeScreen').dataset.client = JSON.stringify(client);
 }
@@ -1580,17 +1590,29 @@ async function submitIntake() {
 
   S.intakeData = intakeRecord;
   document.getElementById('intakeScreen').style.display = 'none';
+  document.getElementById('client-portal').classList.add('visible');
   renderClientView(clientData);
   setTimeout(() => {
     renderNutritionPlan(intakeRecord);
     loadWeightHistory(clientData.name);
+    // Switch to nutrition tab to show the plan
+    switchCpDay(1);
   }, 300);
 }
 
 // ── NUTRITION PLAN ──
 function renderNutritionPlan(intake) {
   const el = document.getElementById('nutritionContent');
-  if (!el || !intake) return;
+  if (!el) return;
+  if (!intake) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:60px 24px">
+        <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:1.4rem;color:#fff;letter-spacing:1px;margin-bottom:8px">No Plan Yet</div>
+        <div style="font-family:monospace;font-size:.65rem;color:#444;letter-spacing:.08em;line-height:1.8;margin-bottom:28px">Complete your intake form to get your<br>personalised calories, macros and meal plan.</div>
+        <button onclick="showIntakeForm(JSON.parse(localStorage.getItem('forgedClient')||'{}'))" style="background:#fff;color:#000;font-family:monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;padding:14px 28px;border:none;border-radius:3px;cursor:pointer">Complete Intake Form →</button>
+      </div>`;
+    return;
+  }
 
   const meals = intake.meals_per_day || 3;
   const goalLabel = intake.goal === 'fat' ? 'Fat Loss' : intake.goal === 'muscle' ? 'Muscle Gain' : 'Recomposition';
