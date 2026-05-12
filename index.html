@@ -607,13 +607,14 @@ async function checkPin(){
 }
 async function clientLogin(){
   const name=document.getElementById('clientNameInput').value.trim().toLowerCase();
-  const {data,error}=await sb.from('clients').select('*').ilike('name',name).single();
+  const {data:clientArr,error}=await sb.from('clients').select('*').ilike('name',name).limit(1);
+  const data = clientArr && clientArr.length > 0 ? clientArr[0] : null;
   if(error||!data){document.getElementById('clientError').style.display='block';return;}
   document.getElementById('clientError').style.display='none';
   S.currentClient=data.name;
+  localStorage.setItem('forgedClient', JSON.stringify(data));
   document.getElementById('client-login').classList.remove('visible');
-  document.getElementById('client-portal').classList.add('visible');
-  renderClientView(data);
+  await checkAndRenderClient(data);
 }
 
 // ── COACH ──
