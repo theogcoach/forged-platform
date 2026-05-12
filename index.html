@@ -1502,38 +1502,12 @@ async function generateAIProgram(intake, clientData) {
   const equipLabel = intake.equipment === 'full_gym' ? 'full gym with all equipment' : intake.equipment === 'home_gym' ? 'home gym with basic equipment' : 'minimal equipment';
   const styleLabel = intake.style === 'strength' ? 'strength focused' : intake.style === 'bodybuilding' ? 'bodybuilding hypertrophy' : intake.style === 'athletic' ? 'athletic and functional' : 'balanced mixed';
 
-  const prompt = `You are an expert personal trainer. Build a ${intake.training_days}-day per week training program for a client with the following profile:
-
-Goal: ${goalLabel}
-Experience: ${intake.experience}
-Equipment: ${equipLabel}  
-Training style: ${styleLabel}
-Age: ${intake.age}, Sex: ${intake.sex}
-Weight: ${intake.weight_kg}kg
-Injuries/limitations: ${intake.injuries || 'none'}
-
-Return ONLY a JSON object with this exact structure, no other text:
-{
-  "program_name": "Program name here",
-  "days": [
-    {
-      "label": "Day label e.g. Mon - Push Day",
-      "exercises": [
-        {
-          "name": "Exercise name",
-          "sets": "4",
-          "reps": "8-10",
-          "rest": "2 min",
-          "rpe": "7-8",
-          "notes": "Coaching cue here",
-          "alternatives": "Alternative exercise"
-        }
-      ]
-    }
-  ]
-}
-
-Include ${intake.training_days} training days. Each day should have 4-6 exercises. Make it appropriate for ${intake.experience} level. Include warm-up notes in the first exercise coaching notes.`;
+  const prompt = 'You are an expert personal trainer. Build a ' + intake.training_days + '-day per week training program.\n' +
+    'Client profile - Goal: ' + goalLabel + ', Experience: ' + intake.experience + ', Equipment: ' + equipLabel + ', Style: ' + styleLabel + '\n' +
+    'Age: ' + intake.age + ', Sex: ' + intake.sex + ', Weight: ' + intake.weight_kg + 'kg\n' +
+    'Injuries: ' + (intake.injuries || 'none') + '\n\n' +
+    'Return ONLY JSON: {"program_name":"name","days":[{"label":"Day label","exercises":[{"name":"name","sets":"3","reps":"8","rest":"90s","rpe":"7","notes":"cue","alternatives":"alt"}]}]}\n' +
+    'Include ' + intake.training_days + ' days, 4-6 exercises each, ' + intake.experience + ' level.'
 
   try {
     // Show notification to client
